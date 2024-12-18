@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 助手页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #140F35; /* 深紫色背景 */
+            color: #ffffff; /* 白色文字 */
+        }
+
+        /* AI 助手按钮样式 */
+        .ai-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #FFC107; /* 按钮背景颜色 */
+            color: #140F35; /* 按钮文字颜色 */
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .ai-button:hover {
+            background-color: #ffffff; /* 按钮悬停背景颜色 */
+            transform: scale(1.1); /* 悬停时放大 */
+        }
+
+        /* AI 助手窗口样式 */
+        .content {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #1E1A47; /* 深紫色背景 */
+            border: 2px solid #ffffff; /* 边框颜色 */
+            border-radius: 10px;
+            display: none; /* 默认隐藏 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .content.active {
+            display: block; /* 激活时显示 */
+        }
+
+        /* iframe 样式 */
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- AI 助手按钮 -->
+    <button class="ai-button" onclick="toggleAIChat()">+</button>
+
+    <!-- AI 助手窗口 -->
+    <div id="ai-chat" class="content">
+        <iframe src="about:blank" id="iframe-content" class="iframe-container"></iframe>
+    </div>
+
+    <script>
+        function toggleAIChat() {
+            const aiChat = document.getElementById('ai-chat');
+            const iframe = document.getElementById('iframe-content');
+
+            // 切换窗口显示/隐藏
+            if (aiChat.classList.contains('active')) {
+                aiChat.classList.remove('active');
+                iframe.src = 'about:blank'; // 清空 iframe
+            } else {
+                aiChat.classList.add('active');
+                iframe.src = 'http://127.0.0.1:7867/userChat/'; // 加载 AI 助手内容
+            }
+        }
+    </script>
+</body>
+</html>

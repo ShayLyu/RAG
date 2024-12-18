@@ -154,6 +154,7 @@ textarea::placeholder {
 
 def get_chat_user_block():
     with gr.Blocks(theme=gr.themes.Base(primary_hue="sky",neutral_hue=custom_color),css=custom_css) as chat:
+
         chatbot = gr.Chatbot(label="Chatbot", type="messages")
         msg = gr.Textbox(
             placeholder="在此输入内容，然后回车发送...",
@@ -173,9 +174,28 @@ def get_chat_user_block():
         )
 
     return chat
+examples = [
+        {"text": "石墨烯是什么?"},
+        {"text": "石墨烯有什么应用?"},
+        {"text": "石墨烯如何得到？"}
+    ]
+
+def response_for_user():
+    # 自定义 CSS
+
+    chat=gr.ChatInterface(
+            fn=response_for_users,  # Generator function
+            type="messages",  # Message-based interaction
+            title="粤孵智库",  # Set interface title
+            examples=examples,
+            description="",
+            chatbot=gr.Chatbot(placeholder="<strong>请问有什么可以帮到您?</strong>"),
+            theme=gr.themes.Base(primary_hue="sky",neutral_hue=custom_color),css=custom_css
+
+        )
 
 
-
+    return chat
 
 
 app = FastAPI()
@@ -187,6 +207,8 @@ def read_main():
 
 app = gr.mount_gradio_app(app, get_chat_block(), path="/chat")
 app = gr.mount_gradio_app(app, get_upload_block(), path="/upload_data")
-app = gr.mount_gradio_app(app, get_chat_user_block(), path="/userChat")
+app = gr.mount_gradio_app(app, get_chat_user_block(), path="/userChat1")
+app = gr.mount_gradio_app(app, response_for_user(), path="/userChat")
+
 
 app = gr.mount_gradio_app(app, get_knowledge_base_block(), path="/create_knowledge_base")
