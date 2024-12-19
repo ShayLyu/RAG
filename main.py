@@ -131,20 +131,6 @@ EXAMPLES = [
 ]
 
 
-custom_color = Color(
-    name="custom",
-    c50="#F5F3FA",   # 浅色
-    c100="#ECE8F5",
-    c200="#D5D1E8",
-    c300="#ABA5C3",
-    c400="#726F95",
-    c500="#20194A",   # 主颜色 (进一步调亮)
-    c600="#1C1642",
-    c700="#181239",
-    c800="#141031",
-    c900="#100C28",
-    c950="#0D0922"    # 深色
-)
 
 custom_css = """
 textarea::placeholder {
@@ -153,7 +139,7 @@ textarea::placeholder {
 """
 
 def get_chat_user_block():
-    with gr.Blocks(theme=gr.themes.Base(primary_hue="sky",neutral_hue=custom_color),css=custom_css) as chat:
+    with gr.Blocks(css=custom_css) as chat:
 
         chatbot = gr.Chatbot(label="Chatbot", type="messages")
         msg = gr.Textbox(
@@ -176,30 +162,60 @@ def get_chat_user_block():
     return chat
 examples = [
         {"text": "石墨烯是什么?"},
-        {"text": "石墨烯有什么应用?"},
-        {"text": "石墨烯如何得到？"}
+        {"text": "石墨烯如何制备？"},
+        {"text": "石墨烯有什么应用?"}
     ]
-
+theme = gr.themes.Base(
+    primary_hue=gr.themes.Color(c100="#dbeafe", c200="#bfdbfe", c300="#93c5fd", c400="#60a5fa", c50="#eff6ff", c500="#3b82f6", c600="#2563eb", c700="#1d4ed8", c800="#1e40af", c900="#1e3a8a", c950="#150F37"),
+    neutral_hue="gray",
+).set(
+    body_background_fill='*primary_950',
+    body_text_color='*neutral_300',
+    body_text_color_subdued='*secondary_300',
+    background_fill_primary='*neutral_800',
+    background_fill_secondary='*neutral_800',
+    border_color_accent='*neutral_600',
+    border_color_primary='*neutral_700',
+    color_accent='*neutral_700',
+    color_accent_soft='*neutral_700',
+    link_text_color='*secondary_500',
+    link_text_color_active='*secondary_500',
+    link_text_color_hover='*secondary_400',
+    link_text_color_visited='*secondary_600',
+    block_background_fill='*neutral_800',
+    block_label_background_fill='*background_fill_secondary',
+    block_title_text_color='*neutral_200',
+    input_background_fill='*neutral_700',
+    input_border_color_focus='*neutral_700',
+    table_border_color='*neutral_700',
+    button_primary_background_fill='*secondary_600',
+    button_primary_background_fill_hover='*primary_700',
+    button_primary_border_color='*primary_600',
+    button_primary_text_color='*primary_200',
+    button_secondary_background_fill='*neutral_600',
+    button_secondary_background_fill_hover='*neutral_500',
+    button_secondary_border_color='*neutral_600',
+    button_secondary_border_color_hover='*neutral_500',
+    button_secondary_text_color='*neutral_300'
+)
 def response_for_user():
-    # 自定义 CSS
 
     chat=gr.ChatInterface(
             fn=response_for_users,  # Generator function
             type="messages",  # Message-based interaction
-            title="粤孵智库",  # Set interface title
+            title="石墨烯智能问答系统",  # Set interface title
             examples=examples,
             description="",
-            chatbot=gr.Chatbot(placeholder="<strong>请问有什么可以帮到您?</strong>"),
-            theme=gr.themes.Base(primary_hue="sky",neutral_hue=custom_color),css=custom_css
-
-        )
+            chatbot=gr.Chatbot(placeholder="<h1>请问有什么可以帮到您?</h1>"),
+            theme=theme  # 设置主题（可选）
+    )
 
 
     return chat
 
 
 app = FastAPI()
-@app.get("/", response_class=HTMLResponse)
+@app.get("/config", response_class=HTMLResponse)
 def read_main():
     html_content = main_html
     return HTMLResponse(content=html_content)
@@ -208,7 +224,7 @@ def read_main():
 app = gr.mount_gradio_app(app, get_chat_block(), path="/chat")
 app = gr.mount_gradio_app(app, get_upload_block(), path="/upload_data")
 app = gr.mount_gradio_app(app, get_chat_user_block(), path="/userChat1")
-app = gr.mount_gradio_app(app, response_for_user(), path="/userChat")
+app = gr.mount_gradio_app(app, response_for_user(), path="/")
 
 
 app = gr.mount_gradio_app(app, get_knowledge_base_block(), path="/create_knowledge_base")

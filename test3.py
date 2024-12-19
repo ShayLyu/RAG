@@ -1,77 +1,63 @@
-import os
-from openai import OpenAI
+import random
+
 import gradio as gr
-
-# Define global variables
-model = "qwen-max"
-temperature = 0.85
-max_tokens = 1024
+from gradio.themes import Color, Base
 
 
-def response_for_user(message, history):
-    """
-    Generates a response for the user based on message and chat history.
-    Args:
-        message (str): User's input message.
-        history (list): Chat history in Gradio format.
-    Yields:
-        str: Streaming response content.
-    """
-    try:
-        # Print input message and history for debugging
-        print(f"Message: {message}")
-        print(f"History: {history}")
+# 定义响应函数
+def random_response(message, history):
+    return random.choice(["Yes", "No"])
+#灰色。2E3148
+gray = Color(
+    name="gray",#
+    c50="#f9fafb",#白。background_fill_secondary table_odd_background_fill
+    c100="#2E3148", # 1
+    c200="#e5e7eb",#button_secondary_background_fill border_color_primary block_label_text_color_dark block_title_text_color_dark
+    c300="#d1d5db",
+    c400="#9ca3af",
+    c500="#6b7280",
+    c600="#4b5563",
+    c700="#374151",
+    c800="#1f2937",
+    c900="#111827",
+    c950="#0b0f19",
+)
 
-        # Validate message
-        if not message.strip():
-            yield "Your input is empty. Please provide a valid message."
-            return
+examples = [
+    {"text": "石墨烯是什么?"},
+    {"text": "石墨烯如何制备？"},
+    {"text": "石墨烯有什么应用?"},
+]
+# with gr.Blocks(css=".gradio-container {background-color: red}") as demo:
 
-        # Prepare chat history for OpenAI API
-        chat_history = [
-            {"role": entry["role"], "content": entry["content"]}
-            for entry in history if "content" in entry and entry["content"]
-        ]
-        chat_history.append({"role": "user", "content": message})
-        print(f"chat_history: {chat_history}")
-
-        # Ensure API key is available
-        api_key = os.getenv("DASHSCOPE_API_KEY")
-        if not api_key:
-            yield "Error: API key not found. Please set the DASHSCOPE_API_KEY environment variable."
-            return
-
-        # Configure OpenAI client
-        client = OpenAI(
-            api_key=api_key,
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-        )
-
-        # Call OpenAI API with streaming
-        completion = client.chat.completions.create(
-            model=model,
-            messages=chat_history,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            stream=True
-        )
-        # Accumulate response content
-        full_response = ""
-        for chunk in completion:
-            content = chunk.choices[0].delta.content
-            if content:
-                full_response += content
-                # Update the history incrementally
-                yield {"role": "assistant", "content": full_response}
-    except Exception as e:
-        print(f"Error: {e}")
-        yield f"An error occurred: {e}"
+# 定义自定义主题
+import gradio as gr
+from gradio.themes import Base
 
 
-# Launch the Gradio chat interface
-gr.ChatInterface(
-    fn=response_for_user,  # Generator function
-    type="messages",       # Message-based interaction
-    title="AI Chatbot Interface", # Set interface title
-    description="Ask any question and receive AI-generated responses in real-time."
-).launch()
+# 创建自定义主题实例
+unified_dark_theme = UnifiedDarkTheme()
+
+
+# 创建 ChatInterface
+chat = gr.ChatInterface(
+    fn=random_response,
+    # type="messages",
+    title="石墨烯智能问答系统",
+    examples=examples,
+    description="输入您的问题，系统将提供智能回答。",
+    fill_width=True,
+    fill_height=True,
+
+    chatbot=gr.Chatbot(
+                       placeholder="<strong>您也许想问:</strong>",
+                       avatar_images=("./image/user-tx.jpg","./image/kf-tx.jpg"),
+                       type="messages"),
+    css=".gradio-container {background-color: #150F37}",
+    theme=UnifiedDarkTheme()
+
+)
+
+# 启动界面并注入自定义 CSS
+if __name__ == "__main__":
+    chat.launch()

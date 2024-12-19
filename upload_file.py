@@ -40,6 +40,7 @@ def upload_unstructured_file(files,label_name):
 
 # 上传结构化数据
 def upload_structured_file(files,label_name):
+    print(f"files:{files},label:{label_name}")
     if files is None:
         gr.Info("请上传文件")
     elif len(label_name) == 0:
@@ -51,17 +52,24 @@ def upload_structured_file(files,label_name):
         try:
             if not os.path.exists(os.path.join(STRUCTURED_FILE_PATH,label_name)):
                 os.mkdir(os.path.join(STRUCTURED_FILE_PATH,label_name))
+                print("folder has been created")
             for file in files:
                 file_path = file.name
+                print(f"file_path:{file_path}")
                 file_name = os.path.basename(file_path)
+                print(f"file_name:{file_name}")
                 destination_file_path = os.path.join(STRUCTURED_FILE_PATH,label_name,file_name)
+                print(f"destination_file_path:{destination_file_path}")
                 shutil.move(file_path,destination_file_path)
+                print(f"{os.path.splitext(destination_file_path)[1]}")
                 if os.path.splitext(destination_file_path)[1] == ".xlsx":
                     df = pd.read_excel(destination_file_path)
+                    print(df)
                 elif os.path.splitext(destination_file_path)[1] == ".csv":
                     df = pd.read_csv(destination_file_path)
                 txt_file_name = os.path.splitext(file_name)[0]+'.txt'
                 columns = df.columns
+                print(columns)
                 with open(os.path.join(STRUCTURED_FILE_PATH,label_name,txt_file_name),"w") as file:
                     for idx,row in df.iterrows():
                         file.write("【")
