@@ -206,7 +206,7 @@ def response_for_user():
             title="石墨烯智能问答系统",  # Set interface title
             examples=examples,
             description="",
-            chatbot=gr.Chatbot(placeholder="<h1>请问有什么可以帮到您?</h1>"),
+            chatbot=gr.Chatbot(placeholder="<h1>您也许有下列问题?</h1>"),
             theme=theme  # 设置主题（可选）
     )
 
