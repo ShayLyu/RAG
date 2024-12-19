@@ -203,7 +203,6 @@ def response_for_user():
     chat=gr.ChatInterface(
             fn=response_for_users,  # Generator function
             type="messages",  # Message-based interaction
-            title="石墨烯智能问答系统",  # Set interface title
             examples=examples,
             description="",
             chatbot=gr.Chatbot(placeholder="<h1>您也许有下列问题?</h1>"),
