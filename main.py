@@ -205,7 +205,8 @@ def response_for_user():
             type="messages",  # Message-based interaction
             examples=examples,
             description="",
-            chatbot=gr.Chatbot(placeholder="<h1>您也许有下列问题?</h1>"),
+            chatbot=gr.Chatbot(placeholder="<h1>您也许有下列问题?</h1>",
+                               avatar_images=("./image/user-tx.jpg", "./image/kf-tx.jpg")),
             theme=theme  # 设置主题（可选）
     )
 
